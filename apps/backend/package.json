@@ -1,0 +1,14 @@
+{
+  "name": "@org/backend",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "nitro dev",
+    "build": "nitro build",
+    "preview": "nitro preview"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "nitropack": "^2.10.0"
+  }
+}
