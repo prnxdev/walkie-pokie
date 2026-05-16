@@ -4,5 +4,6 @@ export default defineNitroConfig({
   srcDir: 'src',
   output: {
     dir: '../../dist/apps/backend'
-  }
+  },
+  imports: false
 })

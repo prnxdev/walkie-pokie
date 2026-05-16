@@ -1,44 +1,53 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router';
+import { RouterLink, RouterView, useRoute } from 'vue-router';
+import { computed } from 'vue';
+
+const route = useRoute();
+const tabClass = (prefix: string) =>
+  computed(() =>
+    route.path.startsWith(prefix)
+      ? 'text-app-accent'
+      : 'text-app-muted'
+  );
+
+const pokedexClass = tabClass('/pokedex');
+const travelClass = tabClass('/travel');
 </script>
 
 <template>
-  <header>
-    <nav>
-      <RouterLink to="/">Home</RouterLink>
-      <RouterLink to="/about">About</RouterLink>
+  <div class="flex flex-col h-dvh max-w-[480px] mx-auto">
+    <header class="shrink-0 flex items-center justify-center h-14 bg-app-bg border-b border-app-border">
+      <h1 class="text-xl font-bold tracking-widest text-app-accent">WalkiePokie</h1>
+    </header>
+
+    <main class="flex-1 overflow-y-auto min-h-0">
+      <RouterView />
+    </main>
+
+    <nav class="shrink-0 flex h-16 bg-app-surface border-t border-app-border pb-[env(safe-area-inset-bottom,0px)]">
+      <RouterLink
+        to="/pokedex"
+        class="flex-1 flex flex-col items-center justify-center gap-1 transition-colors duration-150"
+        :class="pokedexClass"
+      >
+        <svg class="w-[22px] h-[22px]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10" />
+          <line x1="2" y1="12" x2="22" y2="12" />
+          <circle cx="12" cy="12" r="3" />
+        </svg>
+        <span class="text-[0.7rem] font-medium tracking-wide">Pokedex</span>
+      </RouterLink>
+
+      <RouterLink
+        to="/travel"
+        class="flex-1 flex flex-col items-center justify-center gap-1 transition-colors duration-150"
+        :class="travelClass"
+      >
+        <svg class="w-[22px] h-[22px]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="3 11 22 2 13 21 11 13 3 11" />
+        </svg>
+        <span class="text-[0.7rem] font-medium tracking-wide">Travel</span>
+      </RouterLink>
     </nav>
-  </header>
-  <RouterView />
+  </div>
 </template>
-
-<style scoped lang="css">
-header {
-  line-height: 1.5;
-  max-width: 100vw;
-}
-
-nav > a {
-  padding-left: 1rem;
-  padding-right: 1rem;
-}
-
-@media (min-width: 768px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-    margin-left: auto;
-    margin-right: auto;
-    max-width: 768px;
-  }
-
-  nav {
-    text-align: left;
-    font-size: 1rem;
-
-    padding: 1rem 0;
-    margin-top: 1rem;
-  }
-}
-</style>
