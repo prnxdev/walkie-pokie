@@ -1,11 +1,15 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { usePokedex } from '../composables/usePokedex'
 
 const route = useRoute()
 const router = useRouter()
-const { getCreatureById } = usePokedex()
+const { creatures, loading, fetchCreatures, getCreatureById } = usePokedex()
+
+onMounted(() => {
+  if (creatures.value.length === 0) fetchCreatures()
+})
 
 const creature = computed(() => getCreatureById(route.params.id as string))
 </script>
@@ -13,9 +17,9 @@ const creature = computed(() => getCreatureById(route.params.id as string))
 <template>
   <div class="h-full overflow-y-auto">
 
-    <!-- Not found -->
+    <!-- Loading / not found -->
     <div v-if="!creature" class="flex items-center justify-center h-full text-app-muted text-sm">
-      Creature not found.
+      {{ loading ? 'Loading…' : 'Creature not found.' }}
     </div>
 
     <div v-else class="px-5 py-6 space-y-6">
