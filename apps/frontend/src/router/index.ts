@@ -14,9 +14,9 @@ const router = createRouter({
       component: PokedexView,
     },
     {
-      path: '/travel',
-      name: 'travel',
-      component: () => import('../views/TravelView.vue'),
+      path: '/explore',
+      name: 'explore',
+      component: () => import('../views/ExploreView.vue'),
     },
   ],
 });

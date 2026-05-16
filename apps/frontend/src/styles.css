@@ -6,6 +6,21 @@
   --color-app-border: #1e3a5f;
   --color-app-accent: #60a5fa;
   --color-app-muted: #4a6b8a;
+
+  --animate-radar-sweep: radar-sweep 3s linear infinite;
+  --animate-ring-ping: ring-ping 2.4s ease-out infinite;
+  --animate-ring-ping-delay: ring-ping 2.4s ease-out 0.8s infinite;
+  --animate-ring-ping-delay2: ring-ping 2.4s ease-out 1.6s infinite;
+}
+
+@keyframes radar-sweep {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+@keyframes ring-ping {
+  0%   { transform: scale(0.6); opacity: 0.6; }
+  100% { transform: scale(1.6); opacity: 0; }
 }
 
 @layer base {

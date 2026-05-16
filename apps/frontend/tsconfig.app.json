@@ -2,10 +2,10 @@
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "outDir": "dist",
+    "lib": ["esnext", "dom"],
     "types": ["vite/client"],
     "declarationMap": false,
     "emitDeclarationOnly": false,
-    "rootDir": "src",
     "jsx": "preserve",
     "jsxImportSource": "vue",
     "module": "esnext",

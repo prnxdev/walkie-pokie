@@ -11,7 +11,7 @@ const tabClass = (prefix: string) =>
   );
 
 const pokedexClass = tabClass('/pokedex');
-const travelClass = tabClass('/travel');
+const exploreClass = tabClass('/explore');
 </script>
 
 <template>
@@ -39,14 +39,14 @@ const travelClass = tabClass('/travel');
       </RouterLink>
 
       <RouterLink
-        to="/travel"
+        to="/explore"
         class="flex-1 flex flex-col items-center justify-center gap-1 transition-colors duration-150"
-        :class="travelClass"
+        :class="exploreClass"
       >
         <svg class="w-[22px] h-[22px]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <polygon points="3 11 22 2 13 21 11 13 3 11" />
         </svg>
-        <span class="text-[0.7rem] font-medium tracking-wide">Travel</span>
+        <span class="text-[0.7rem] font-medium tracking-wide">Explore</span>
       </RouterLink>
     </nav>
   </div>

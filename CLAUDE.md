@@ -14,6 +14,10 @@
 
 - For scaffolding tasks (creating apps, libs, project structure, setup), ALWAYS invoke the `nx-generate` skill FIRST before exploring or calling MCP tools
 
+## Working with Apps and Libs
+
+- ALWAYS invoke the `nx-workspace-patterns` skill before making any structural decisions about apps or libs — this includes creating, moving, tagging, configuring boundaries, or updating project layout
+
 ## When to use nx_docs
 
 - USE for: advanced config options, unfamiliar flags, migration guides, plugin configuration, edge cases
