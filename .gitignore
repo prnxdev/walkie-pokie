@@ -44,6 +44,11 @@ apps/backend/.nitro
 .cursor/rules/nx-rules.mdc
 .github/instructions/nx.instructions.md
 
+# SQLite databases
+*.db
+*.db-shm
+*.db-wal
+
 .claude/worktrees
 .claude/settings.local.json
 .nx/polygraph

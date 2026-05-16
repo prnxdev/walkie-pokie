@@ -2,6 +2,7 @@ import { defineEventHandler, readBody, createError } from 'h3'
 import { Ollama } from 'ollama'
 import { CreatureSchema, creatureJsonSchema } from '@org/shared-schema'
 import { socketSessions, pendingExploreRequests } from '../../state/sessions'
+import { saveCreature } from '../../lib/db'
 import { logger } from '../../lib/logger'
 
 const ollama = new Ollama({ host: process.env.OLLAMA_HOST || 'http://localhost:11434' })
@@ -9,7 +10,7 @@ const OLLAMA_MODEL = process.env.OLLAMA_MODEL || 'llama3.2'
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)
-  const { socketId, requestId } = body ?? {}
+  const { socketId, requestId, userId } = body ?? {}
 
   if (!socketId || !requestId) {
     logger.warn({ socketId, requestId }, 'explore request rejected: missing fields')
@@ -24,12 +25,12 @@ export default defineEventHandler(async (event) => {
 
   pendingExploreRequests.set(requestId, socketId)
   logger.info({ socketId, requestId, model: OLLAMA_MODEL }, 'explore request accepted')
-  generateCreature(requestId)
+  generateCreature(requestId, userId ?? null)
 
   return { accepted: true, requestId }
 })
 
-async function generateCreature(requestId: string) {
+async function generateCreature(requestId: string, userId: string | null) {
   try {
     const response = await ollama.chat({
       model: OLLAMA_MODEL,
@@ -45,6 +46,13 @@ async function generateCreature(requestId: string) {
 
     const creature = CreatureSchema.parse(JSON.parse(response.message.content))
     logger.info({ requestId, name: creature.name, rarity: creature.rarity }, 'creature generated')
+
+    if (userId) {
+      const creatureId = crypto.randomUUID()
+      saveCreature(creatureId, userId, creature)
+      logger.info({ requestId, userId, creatureId }, 'creature saved to database')
+    }
+
     const currentSocketId = pendingExploreRequests.get(requestId)
     const socket = currentSocketId ? socketSessions.get(currentSocketId) : undefined
     socket?.emit('explore:result', { requestId, creature })

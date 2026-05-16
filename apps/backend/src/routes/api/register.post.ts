@@ -1,6 +1,6 @@
 import { defineEventHandler, readBody, createError } from 'h3'
 import { z } from 'zod'
-import { users } from '../../state/users'
+import { createUser } from '../../lib/db'
 import { logger } from '../../lib/logger'
 
 const BodySchema = z.object({
@@ -18,7 +18,7 @@ export default defineEventHandler(async (event) => {
 
   const { name } = result.data
   const id = crypto.randomUUID()
-  users.set(id, { id, name, createdAt: new Date() })
+  createUser(id, name)
 
   logger.info({ userId: id, name }, 'user registered')
 

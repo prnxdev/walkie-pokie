@@ -2,6 +2,7 @@ import { ref, watch } from 'vue'
 import { v4 as uuidv4 } from 'uuid'
 import type { Creature } from '@org/shared-schema'
 import { useSocket } from './useSocket'
+import { useUser } from './useUser'
 
 export type { Creature }
 
@@ -13,6 +14,7 @@ let resumeEmitted = false
 
 export function useExplore() {
   const { socket, socketId } = useSocket()
+  const { userId } = useUser()
 
   function setupResultListener(requestId: string) {
     socket.once('explore:result', (data: { requestId: string; creature: Creature }) => {
@@ -55,7 +57,7 @@ export function useExplore() {
       await fetch('/api/explore', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ socketId: socketId.value, requestId }),
+        body: JSON.stringify({ socketId: socketId.value, requestId, userId: userId.value }),
       })
     } catch {
       isPending.value = false
