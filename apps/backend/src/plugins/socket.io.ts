@@ -3,7 +3,7 @@ import type { NitroApp } from 'nitropack'
 import { Server as Engine } from 'engine.io'
 import { Server } from 'socket.io'
 import { defineEventHandler } from 'h3'
-import { socketSessions, setIO } from '../state/sessions'
+import { socketSessions, pendingExploreRequests, setIO } from '../state/sessions'
 import { logger } from '../lib/logger'
 
 export default defineNitroPlugin((nitroApp: NitroApp) => {
@@ -17,6 +17,13 @@ export default defineNitroPlugin((nitroApp: NitroApp) => {
     socketSessions.set(socket.id, socket)
     socket.emit('session', { socketId: socket.id })
     logger.info({ socketId: socket.id }, 'client connected')
+
+    socket.on('explore:resume', ({ requestId }: { requestId: string }) => {
+      if (pendingExploreRequests.has(requestId)) {
+        pendingExploreRequests.set(requestId, socket.id)
+        logger.info({ socketId: socket.id, requestId }, 'explore session resumed')
+      }
+    })
 
     socket.on('disconnect', (reason) => {
       socketSessions.delete(socket.id)

@@ -1,7 +1,7 @@
 import { defineEventHandler, readBody, createError } from 'h3'
 import { Ollama } from 'ollama'
 import { CreatureSchema, creatureJsonSchema } from '@org/shared-schema'
-import { socketSessions } from '../../state/sessions'
+import { socketSessions, pendingExploreRequests } from '../../state/sessions'
 import { logger } from '../../lib/logger'
 
 const ollama = new Ollama({ host: process.env.OLLAMA_HOST || 'http://localhost:11434' })
@@ -22,13 +22,14 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 404, message: 'Socket session not found' })
   }
 
+  pendingExploreRequests.set(requestId, socketId)
   logger.info({ socketId, requestId, model: OLLAMA_MODEL }, 'explore request accepted')
-  generateCreature(socket, requestId)
+  generateCreature(requestId)
 
   return { accepted: true, requestId }
 })
 
-async function generateCreature(socket: any, requestId: string) {
+async function generateCreature(requestId: string) {
   try {
     const response = await ollama.chat({
       model: OLLAMA_MODEL,
@@ -44,9 +45,15 @@ async function generateCreature(socket: any, requestId: string) {
 
     const creature = CreatureSchema.parse(JSON.parse(response.message.content))
     logger.info({ requestId, name: creature.name, rarity: creature.rarity }, 'creature generated')
-    socket.emit('explore:result', { requestId, creature })
+    const currentSocketId = pendingExploreRequests.get(requestId)
+    const socket = currentSocketId ? socketSessions.get(currentSocketId) : undefined
+    socket?.emit('explore:result', { requestId, creature })
   } catch (error: any) {
     logger.error({ requestId, err: error }, 'creature generation failed')
-    socket.emit('explore:error', { requestId, error: error?.message || 'Failed to generate creature' })
+    const currentSocketId = pendingExploreRequests.get(requestId)
+    const socket = currentSocketId ? socketSessions.get(currentSocketId) : undefined
+    socket?.emit('explore:error', { requestId, error: error?.message || 'Failed to generate creature' })
+  } finally {
+    pendingExploreRequests.delete(requestId)
   }
 }
