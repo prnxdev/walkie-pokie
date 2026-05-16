@@ -14,6 +14,11 @@ const router = createRouter({
       component: PokedexView,
     },
     {
+      path: '/pokedex/:id',
+      name: 'creature',
+      component: () => import('../views/CreatureView.vue'),
+    },
+    {
       path: '/explore',
       name: 'explore',
       component: () => import('../views/ExploreView.vue'),

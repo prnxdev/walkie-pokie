@@ -1,7 +1,18 @@
 <script setup lang="ts">
+import { onMounted } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import { useExplore } from '../composables/useExplore'
 
+const route = useRoute()
+const router = useRouter()
 const { isPending, creature, startExploring } = useExplore()
+
+onMounted(() => {
+  if (route.query.autostart === '1' && !isPending.value && !creature.value) {
+    router.replace('/explore')
+    startExploring()
+  }
+})
 </script>
 
 <template>

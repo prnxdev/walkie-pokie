@@ -87,8 +87,13 @@ export function saveCreature(id: string, userId: string, creature: Creature): vo
   )
 }
 
-export function getCreaturesByUser(userId: string): Creature[] {
+export interface CreatureWithId extends Creature {
+  id: string
+}
+
+export function getCreaturesByUser(userId: string): CreatureWithId[] {
   return stmts.getCreaturesByUser.all(userId).map((row) => ({
+    id: row.id,
     name: row.name,
     rarity: row.rarity as Creature['rarity'],
     types: JSON.parse(row.types),
