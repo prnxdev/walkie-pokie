@@ -42,6 +42,12 @@ async function generateCreature(requestId: string, userId: string | null) {
             'Generate a random fantasy creature. Be creative and varied — mix elemental, mythological, and bizarre archetypes. Provide realistic weight and height for the creature type. Give it 1–4 unique attacks.',
         },
       ],
+      options: {
+        temperature: 0.9,
+        top_k: 50,
+        top_p: 0.95,
+        seed: -1
+      }
     })
 
     const creature = CreatureSchema.parse(JSON.parse(response.message.content))
