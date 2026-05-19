@@ -44,3 +44,5 @@ Examples:
 - `feat(frontend): add user authentication flow`
 - `fix(backend): handle missing route params`
 - `chore: update dependencies`
+
+**Before committing:** Always show the user the proposed commit message and wait for explicit confirmation before running `git commit`.
